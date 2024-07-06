@@ -1,0 +1,33 @@
+services:
+    db:
+        build: . # Build the image using the Dockerfile in the current directory
+        container_name: postgres-db # Name of the PostgreSQL container
+        ports:
+            - "5432:5432" # Expose port 5432
+        environment:
+            POSTGRES_USER: admin # PostgreSQL username
+            POSTGRES_PASSWORD: admin # PostgreSQL password
+            POSTGRES_DB: mydb # PostgreSQL database name
+        volumes:
+            - db-data:/var/lib/postgresql/data # Persistent storage for PostgreSQL data
+        healthcheck:
+            test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER}"] # Health check command
+            interval: 10s # Interval between health checks
+            timeout: 5s # Timeout for health check
+            retries: 5 # Number of retries before marking as unhealthy
+
+    pgadmin:
+        image: dpage/pgadmin4 # Use the pgAdmin image
+        container_name: pgadmin # Name of the pgAdmin container
+        environment:
+            PGADMIN_DEFAULT_EMAIL: admin@admin.com # pgAdmin default email
+            PGADMIN_DEFAULT_PASSWORD: admin # pgAdmin default password
+        ports:
+            - "5050:5050" # Expose port 5050
+        depends_on:
+            db:
+                condition: service_healthy # Only start pgAdmin if PostgreSQL is healthy
+
+volumes:
+    db-data:
+        driver: local # Use local driver for persistent storage

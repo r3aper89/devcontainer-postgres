@@ -1,0 +1,29 @@
+{
+	"name": "Postgres Development Container", // Name of the development container
+	"dockerComposeFile": "../docker-compose.yml", // Path to the Docker Compose file
+	"service": "db", // Service name defined in the Docker Compose file
+	"workspaceFolder": "/", // Set to root to avoid workspace issues
+	"customizations": {
+		"vscode": {
+			"extensions": [
+				"mtxr.sqltools", // SQL tools extension for VSCode
+				"mtxr.sqltools-driver-pg" // PostgreSQL driver for SQL tools
+			]
+		}
+	},
+	"settings": {
+		"sqltools.connections": [
+			{
+				"name": "PostgreSQL Container", // Name of the connection
+				"driver": "PostgreSQL", // Database driver
+				"server": "localhost", // Server address
+				"port": 5432, // Port number
+				"database": "mydb", // Database name
+				"username": "admin", // Username
+				"password": "admin" // Password
+			}
+		]
+	},
+	"forwardPorts": ["5432:5432", "5050:5050"], // Ports to forward
+	"postCreateCommand": "psql --version" // Command to run after container creation
+}
